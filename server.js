@@ -7,25 +7,25 @@ app.use(express.json());
 // POST /aircall/calls
 app.post("/aircall/calls", (req, res) => {
   if (req.body.event === "call.created") {
-    console.log("Call.created", req.body);
+    // console.log("Call.created", req.body);
     const callId = req.body.data.id;
     const cardContent = getInsightCardContent();
 
     const payload = createInsightCardPayload(cardContent);
-    console.log("payload", payload);
+    // console.log("payload", payload);
 
     sendInsightCard(callId, payload);
   } else {
     console.log("Event non-handled:", req.body.event);
   }
-  console.log("/aircall/calls");
+//   console.log("/aircall/calls");
 
   res.sendStatus(200);
 });
 app.get("/aircall/calls", (req, res) => {
   res.writeHead(200, { "Content-Type": "text/plain" });
   res.end("Hello, this server is running on GoDaddy!");
-  console.log("working");
+//   console.log("working");
 });
 
 const sendInsightCard = (callId, payload) => {
