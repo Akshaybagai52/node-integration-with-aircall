@@ -72,34 +72,30 @@ const createInsightCardPayload = async (lines) => {
     contents: [],
   };
   const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
-  const response = await axios.get(
-    `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`
+  const { data } = await axios.get(API_URL);
+  console.log(data);
+  const { name = "N/A", mobile = "N/A", notes = "N/A" } = data;
+  payload.contents.push(
+    {
+      type: "title",
+      text: name,
+    },
+    {
+      type: "shortText",
+      text: name,
+      label: "Company Name",
+    },
+    {
+      type: "shortText",
+      text: mobile,
+      label: "Phone No.",
+    },
+    {
+      type: "shortText",
+      text: notes,
+      label: "Last Note",
+    }
   );
-  console.log(response.data);
-  lines.forEach((line, index) => {
-    payload.contents.push(
-      {
-        type: "title",
-        text: response.data.name || "N/A",
-        link: "https://my-custom-crm.com/12345",
-      },
-      {
-        type: "shortText",
-        text: response.data.name || "N/A",
-        label: "Company Name",
-      },
-      {
-        type: "shortText",
-        text: response.data.mobile || "N/A",
-        label: "Phone No.",
-      },
-      {
-        type: "shortText",
-        text: response.data.notes || "N/A",
-        label: "Last Note",
-      }
-    );
-  });
   return payload;
 };
 
