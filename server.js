@@ -1,31 +1,44 @@
 const request = require("request");
 const express = require("express");
+const { default: axios } = require("axios");
 const app = express();
 
 app.use(express.json());
-
+let phoneNumber;
 // POST /aircall/calls
-app.post("/aircall/calls", (req, res) => {
+app.post("/aircall/calls", async (req, res) => {
   if (req.body.event === "call.created") {
-    // console.log("Call.created", req.body);
+    phoneNumber = req.body.data.raw_digits;
+    console.log("Call.created", phoneNumber);
+
     const callId = req.body.data.id;
     const cardContent = getInsightCardContent();
 
-    const payload = createInsightCardPayload(cardContent);
-    // console.log("payload", payload);
+    const payload = await createInsightCardPayload(cardContent);
 
-    sendInsightCard(callId, payload);
+    try {
+      // Make the asynchronous axios request
+      // const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
+      // const response = await axios.get(`https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`);
+      // console.log(response.data);
+
+      // Continue with the rest of your code here
+      sendInsightCard(callId, payload);
+    } catch (error) {
+      // Handle the error if the axios request fails
+      console.error("Error in axios request:", error);
+    }
   } else {
     console.log("Event non-handled:", req.body.event);
   }
-//   console.log("/aircall/calls");
 
   res.sendStatus(200);
 });
+
 app.get("/aircall/calls", (req, res) => {
   res.writeHead(200, { "Content-Type": "text/plain" });
   res.end("Hello, this server is running on GoDaddy!");
-//   console.log("working");
+  //   console.log("working");
 });
 
 const sendInsightCard = (callId, payload) => {
@@ -54,30 +67,35 @@ const getInsightCardContent = () => {
   return lines;
 };
 
-const createInsightCardPayload = (lines) => {
+const createInsightCardPayload = async (lines) => {
   let payload = {
     contents: [],
   };
+  const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
+  const response = await axios.get(
+    `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`
+  );
+  console.log(response.data);
   lines.forEach((line, index) => {
     payload.contents.push(
       {
         type: "title",
-        text: line,
+        text: response.data.name || "N/A",
         link: "https://my-custom-crm.com/12345",
       },
       {
         type: "shortText",
-        text: "xyz company",
+        text: response.data.name || "N/A",
         label: "Company Name",
       },
       {
         type: "shortText",
-        text: "+61 283109201",
+        text: response.data.mobile || "N/A",
         label: "Phone No.",
       },
       {
         type: "shortText",
-        text: "Need Help from you",
+        text: response.data.notes || "N/A",
         label: "Last Note",
       }
     );
