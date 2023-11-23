@@ -73,7 +73,7 @@ const createInsightCardPayload = async (lines) => {
   };
   const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
   const { data } = await axios.get(API_URL);
-  console.log(data);
+  // console.log(data);
   const { name = "N/A", mobile = "N/A", notes = "N/A" } = data;
   payload.contents.push(
     {
