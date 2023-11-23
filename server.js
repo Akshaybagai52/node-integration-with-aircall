@@ -9,7 +9,6 @@ let phoneNumber;
 app.post("/aircall/calls", async (req, res) => {
   if (req.body.event === "call.created") {
     phoneNumber = req.body.data.raw_digits;
-    console.log("Call.created", phoneNumber);
 
     const callId = req.body.data.id;
     const cardContent = getInsightCardContent();
@@ -17,12 +16,6 @@ app.post("/aircall/calls", async (req, res) => {
     const payload = await createInsightCardPayload(cardContent);
 
     try {
-      // Make the asynchronous axios request
-      // const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
-      // const response = await axios.get(`https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`);
-      // console.log(response.data);
-
-      // Continue with the rest of your code here
       sendInsightCard(callId, payload);
     } catch (error) {
       // Handle the error if the axios request fails
@@ -72,30 +65,41 @@ const createInsightCardPayload = async (lines) => {
     contents: [],
   };
   const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
-  const { data } = await axios.get(API_URL);
-  // console.log(data);
-  const { name = "N/A", mobile = "N/A", notes = "N/A" } = data;
-  payload.contents.push(
-    {
-      type: "title",
-      text: name,
-    },
-    {
-      type: "shortText",
-      text: name,
-      label: "Company Name",
-    },
-    {
-      type: "shortText",
-      text: mobile,
-      label: "Phone No.",
-    },
-    {
-      type: "shortText",
-      text: notes,
-      label: "Last Note",
-    }
-  );
+  try {
+    const { data } = await axios.get(API_URL);
+    // console.log(data);
+    const { name = "N/A", mobile = "N/A", notes = "N/A" } = data;
+    payload.contents.push(
+      {
+        type: "title",
+        text: "View Detials",
+        link: `https://voipy.businessictsydney.com.au/aircall/candidate-details/${phoneNumber}`
+      },
+      {
+        type: "shortText",
+        text: name,
+        label: "Company Name",
+      },
+      {
+        type: "shortText",
+        text: mobile,
+        label: "Phone No.",
+      },
+      {
+        type: "shortText",
+        text: notes,
+        label: "Last Note",
+      }
+    );
+  } catch {
+    payload.contents.push(
+      {
+        type: "title",
+        text: "Details Not found",
+      },
+    );
+  }
+  
   return payload;
 };
 
