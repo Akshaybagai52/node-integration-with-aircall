@@ -73,21 +73,21 @@ const createInsightCardPayload = async (lines) => {
       {
         type: "title",
         text: "View Detials",
-        link: viewUrl,
+        link: viewUrl || "N/A",
       },
       {
         type: "shortText",
-        text: name,
+        text: name || "N/A",
         label: "Company Name",
       },
       {
         type: "shortText",
-        text: mobile,
+        text: mobile || "N/A",
         label: "Phone No.",
       },
       {
         type: "shortText",
-        text: notes,
+        text: notes || "N/A",
         label: "Last Note",
       }
     );
