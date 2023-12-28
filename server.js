@@ -68,12 +68,12 @@ const createInsightCardPayload = async (lines) => {
   try {
     const { data } = await axios.get(API_URL);
     // console.log(data);
-    const { name = "N/A", mobile = "N/A", notes = "N/A" } = data;
+    const { name = "N/A", mobile = "N/A", notes = "N/A", viewUrl  } = data;
     payload.contents.push(
       {
         type: "title",
         text: "View Detials",
-        link: `https://voipy.businessictsydney.com.au/aircall/candidate-details/${phoneNumber}`
+        link: viewUrl,
       },
       {
         type: "shortText",
