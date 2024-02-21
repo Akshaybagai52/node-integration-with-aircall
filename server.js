@@ -7,6 +7,7 @@ app.use(express.json());
 let phoneNumber;
 // POST /aircall/calls
 app.post("/aircall/calls", async (req, res) => {
+  console.log(req.body)
   if (req.body.event === "call.created") {
     phoneNumber = req.body.data.raw_digits;
 
@@ -35,8 +36,8 @@ app.get("/aircall/calls", (req, res) => {
 });
 
 const sendInsightCard = (callId, payload) => {
-  const API_ID = "a6caaf06ff64165cd43ae294e2198ea0";
-  const API_TOKEN = "6b8934a7422353ebae48e818912136d2";
+  const API_ID = "dab2c67791900d93621d0451eda4880a";
+  const API_TOKEN = "f17b09404a400aef85360a86d51fdf80";
 
   const uri = `https://${API_ID}:${API_TOKEN}@api.aircall.io/v1/calls/${callId}/insight_cards`;
 
@@ -64,7 +65,7 @@ const createInsightCardPayload = async (lines) => {
   let payload = {
     contents: [],
   };
-  const API_URL = `https://voipy.businessictsydney.com.au/aircall/candidate/${phoneNumber}`;
+  const API_URL = `https://voipy.businessictsydney.com.au/aircall-luke/candidate/${phoneNumber}`;
   try {
     const { data } = await axios.get(API_URL);
     // console.log(data);
